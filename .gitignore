@@ -1,0 +1,31 @@
+.DS_Store
+node_modules
+*.log
+.idea/
+
+# Build outputs
+dist/
+resources/common/css/*.css.map
+resources/common/js/*.map
+
+# Local WordPress (if this theme is in a full WP tree, avoid committing env-specific assets)
+wp-content/uploads/
+wp-content/cache/
+
+# Env files
+.env
+*.local
+
+# Claude Code の設定・スキル（ローカル環境依存のため共有しない）
+.claude/
+.agents/
+
+# Composer
+vendor/
+
+# プラグイン化した機能（wp-content/plugins/ へ移動するまでの一時置き場）
+baizy-custom-blocks/
+baizy-term-color/
+baizy-color-palette/
+performance-report.json
+performance-trace.json

@@ -1,0 +1,91 @@
+@use "../scss_var" as var;
+
+/* -------------------------------------------------- */
+/* reset（モダンブラウザ向け・:where()で詳細度0） */
+/* -------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:where(*) {
+  margin: 0;
+  padding: 0;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit;
+  font-weight: inherit;
+  text-wrap: pretty;
+  word-break: auto-phrase;
+}
+
+:where(ol, ul) {
+  list-style: none;
+}
+
+:where(em, address) {
+  font-style: normal;
+}
+
+:where(table) {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+:where(body) {
+  font-family: var(--main-font-family);
+  font-size: var(--main-font-size);
+  color: var(--main-font-color);
+  line-height: var(--main-line-height);
+  font-weight: var(--main-font-weight);
+  letter-spacing: var(--main-letter-spacing);
+  -webkit-text-size-adjust: 100%; // Safari は標準プロパティ未対応のため残す
+  text-size-adjust: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: strict;
+}
+
+:where(input, textarea, button, select) {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+:where(button) {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* media */
+/* -------------------------------------------------- */
+:where(img, svg, video) {
+  max-width: 100%;
+  height: auto;
+  border: none;
+  vertical-align: bottom;
+  line-height: 1;
+}
+
+:where(:root, body) {
+  overflow-x: clip;
+}
+
+/* link */
+/* -------------------------------------------------- */
+:where(a) {
+  color: var(--main-link-color);
+  text-decoration: none;
+
+  @include var.hover {
+    img {
+      opacity: 0.7;
+      transition: 0.3s;
+    }
+  }
+}

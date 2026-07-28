@@ -1,0 +1,69 @@
+@use "sass:math";
+@use "scss-variables" as var;
+
+// ブレイクポイント指定
+// レンジ構文で sp / pc が隙間なく相補になるよう $sp を基準にする
+@mixin pc {
+  @media screen and (width > #{var.$sp}) {
+    @content;
+  }
+}
+
+// SP領域（$sp 以下）も含む点に注意
+@mixin tab {
+  @media screen and (width <= #{var.$tab}) {
+    @content;
+  }
+}
+
+@mixin sp {
+  @media screen and (width <= #{var.$sp}) {
+    @content;
+  }
+}
+
+// フェードアニメーション
+@mixin fadeBefore {
+  position: relative;
+  opacity: 0;
+  transition: opacity var(--anime-speed) ease, transform var(--anime-speed) ease;
+  transition-delay: var(--anime-delay);
+}
+
+@mixin fadeAfter {
+  opacity: 1;
+}
+
+// レイアウト
+// @include flexCenter;
+@mixin flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// @include positionCenter;
+@mixin positionCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+// hover時（画面幅ではなくデバイスのhover能力で判定）
+@mixin hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// pxをremに変換（単位付き・単位なしどちらでも可）
+@function rm($px) {
+  @if not math.is-unitless($px) {
+    $px: math.div($px, 1px);
+  }
+
+  @return math.div($px, 16) * 1rem;
+}

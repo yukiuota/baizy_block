@@ -1,0 +1,59 @@
+// =============================================================================
+// コアブロックの見た目調整
+//
+// 色・フォントサイズ・余白は theme.json 側で持つ。ここに書くのは
+// theme.json では表現できないもの（擬似要素・メディアクエリ・複雑なセレクタ）だけ。
+// theme.json で足りるものをここに書くと、エディターの UI から設定を
+// 変えても CSS が勝ってしまい「変えたのに反映されない」の原因になる。
+// =============================================================================
+
+// 見出し: 先頭の余白を詰める（ブロック間の blockGap と二重にならないように）
+.wp-block-heading {
+	&:first-child {
+		margin-block-start: 0;
+	}
+}
+
+// 画像: キャプションを中央寄せ
+.wp-block-image {
+	figcaption {
+		text-align: center;
+	}
+}
+
+// テーブル: 横スクロールできるようにして、狭い画面でレイアウトを壊さない
+.wp-block-table {
+	overflow-x: auto;
+
+	table {
+		min-width: 100%;
+	}
+
+	th,
+	td {
+		padding: 0.75em 1em;
+		border: 1px solid var(--wp--preset--color--contrast-2);
+	}
+}
+
+// details（FAQ）: マーカーとカーソルを整える
+.wp-block-details {
+	summary {
+		cursor: pointer;
+		font-weight: 700;
+	}
+}
+
+// カラム: モバイルで縦積みになったときの余白
+.wp-block-columns {
+	@media (max-width: 781px) {
+		&:not(.is-not-stacked-on-mobile) > .wp-block-column:not(:last-child) {
+			margin-block-end: var(--wp--preset--spacing--40);
+		}
+	}
+}
+
+// ボタン: リンク色の継承を切る（elements.link の下線が乗らないように）
+.wp-block-button__link {
+	text-decoration: none;
+}

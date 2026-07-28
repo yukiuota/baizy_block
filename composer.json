@@ -1,0 +1,54 @@
+{
+    "name": "baizy/block-theme",
+    "description": "baizy_block - Block-first hybrid WordPress theme",
+    "type": "wordpress-theme",
+    "license": "GPL-2.0-or-later",
+    "authors": [{
+        "name": "Y.U."
+    }],
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.10",
+        "wp-coding-standards/wpcs": "^3.1",
+        "phpcsstandards/phpcsutils": "^1.0",
+        "phpcsstandards/phpcsextra": "^1.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/php-compatibility": "^9.3"
+    },
+    "autoload": {
+        "classmap": [
+            "app/setup/",
+            "app/models/",
+            "app/controllers/",
+            "app/helpers/",
+            "app/services/"
+        ],
+        "files": [
+            "app/functions/settings.php",
+            "app/functions/my_functions.php",
+            "app/functions/seo.php",
+            "app/functions/admin.php",
+            "app/functions/post_types.php",
+            "app/functions/pagination.php",
+            "app/functions/taxonomy_display.php",
+            "app/functions/excerpt.php",
+            "app/functions/global_links.php",
+            "app/functions/widget.php",
+            "app/functions/block_editor.php",
+            "app/functions/plugins.php",
+            "app/functions/comment.php",
+            "app/functions/acf_json_export.php"
+        ]
+    },
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

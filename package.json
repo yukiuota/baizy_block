@@ -1,0 +1,40 @@
+{
+  "name": "baizy-block",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dist": "pnpm run sass:build && bash scripts/create_dist.sh",
+    "sass:build": "sass resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css resources/common/scss/pages/home.scss:resources/common/css/home.css --style=compressed --no-source-map",
+    "sass:watch": "sass --watch resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css resources/common/scss/pages/home.scss:resources/common/css/home.css --style=compressed --no-source-map",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mcp:start": "chrome-devtools-mcp",
+    "mcp:headless": "chrome-devtools-mcp --headless=true --isolated=true",
+    "mcp:dev": "chrome-devtools-mcp --isolated=true --channel=dev",
+    "perf:check": "node performance-check.js",
+    "perf:localhost": "node performance-check.js http://localhost:10013/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yukiuota/baizy.git"
+  },
+  "keywords": [
+    "wordpress",
+    "theme",
+    "block-editor"
+  ],
+  "author": "Yuki Uota",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/yukiuota/baizy/issues"
+  },
+  "homepage": "https://github.com/yukiuota/baizy#readme",
+  "description": "WordPress オリジナルテーマ制作テンプレート（ブロック中心のハイブリッドテーマ）。カスタムブロックは baizy-custom-blocks プラグインへ分離。",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "chrome-devtools-mcp": "~1.0.1",
+    "puppeteer": "^24.43.1",
+    "sass": "^1.101.0"
+  }
+}

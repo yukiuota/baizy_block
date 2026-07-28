@@ -1,0 +1,7 @@
+@use "../scss_var" as var;
+
+.a {
+    width: var.rm(160);
+}
+
+@include var.sp {}

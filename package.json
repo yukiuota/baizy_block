@@ -30,11 +30,11 @@
   "homepage": "https://github.com/yukiuota/baizy#readme",
   "description": "WordPress オリジナルテーマ制作テンプレート（ブロック中心のハイブリッドテーマ）。カスタムブロックは baizy-custom-blocks プラグインへ分離。",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.12.0"
   },
   "devDependencies": {
-    "chrome-devtools-mcp": "~1.0.1",
-    "puppeteer": "^24.43.1",
-    "sass": "^1.101.0"
+    "chrome-devtools-mcp": "~1.6.0",
+    "puppeteer": "^25.4.0",
+    "sass": "^1.102.0"
   }
 }

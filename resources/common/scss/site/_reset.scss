@@ -1,8 +1,12 @@
+/* -------------------------------------------------- */
+/* reset（モダンブラウザ向け・:where() で詳細度 0）
+/*
+/* フォント・文字色・行間・リンク色・リンクの下線は
+/* theme.json の styles が :root :where(body) / :root :where(a) として
+/* 出力する。ここで同じプロパティを書くと「theme.json を変えたのに
+/* 反映されない」の原因になるため、意図的に持たせていない。
+/* -------------------------------------------------- */
 @use "../scss_var" as var;
-
-/* -------------------------------------------------- */
-/* reset（モダンブラウザ向け・:where()で詳細度0） */
-/* -------------------------------------------------- */
 
 *,
 *::before,
@@ -15,6 +19,8 @@
   padding: 0;
 }
 
+/* 見出しサイズ / 太さは theme.json の styles.elements.h1〜h6 が持つ。
+   ここでは継承に倒して、theme.json 側を唯一の指定元にする。 */
 :where(h1, h2, h3, h4, h5, h6) {
   font-size: inherit;
   font-weight: inherit;
@@ -22,6 +28,8 @@
   word-break: auto-phrase;
 }
 
+/* リストのマーカーは core/list ブロック側（blocks/_core.scss）で戻す。
+   ここで消しているのはナビゲーションやウィジェットの素の ul / ol。 */
 :where(ol, ul) {
   list-style: none;
 }
@@ -36,12 +44,6 @@
 }
 
 :where(body) {
-  font-family: var(--main-font-family);
-  font-size: var(--main-font-size);
-  color: var(--main-font-color);
-  line-height: var(--main-line-height);
-  font-weight: var(--main-font-weight);
-  letter-spacing: var(--main-letter-spacing);
   -webkit-text-size-adjust: 100%; // Safari は標準プロパティ未対応のため残す
   text-size-adjust: 100%;
   overflow-wrap: anywhere;
@@ -78,10 +80,9 @@
 
 /* link */
 /* -------------------------------------------------- */
+/* 色と下線は theme.json の styles.elements.link。
+   ここは画像リンクのホバーだけを受け持つ。 */
 :where(a) {
-  color: var(--main-link-color);
-  text-decoration: none;
-
   @include var.hover {
     img {
       opacity: 0.7;

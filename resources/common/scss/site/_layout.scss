@@ -1,0 +1,42 @@
+// =============================================================================
+// サイトシェル（フロント専用 / blocks.scss には入れない）
+//
+// .wp-site-blocks / .is-layout-constrained / .has-global-padding は
+// resources/layouts/index.php と TemplateHelper::content_wrapper_class() が
+// 出力するクラス。ブロックテーマでコアが自動生成しているラッパーを
+// クラシックテーマ側で再現したもので、CSS 自体はコアが global-styles の
+// インライン CSS として出力する（theme.json を持つテーマなら classic でも出る）。
+//
+// 【ここに書くもの】ページ本体を包む外枠の構造だけ。
+// 【ここに書かないもの】コンテンツ内の見た目。それは blocks/ か patterns/ へ。
+//   ここはエディターに読み込まれないため、書くと編集画面と実物がズレる。
+//
+// コンテンツ幅は theme.json の settings.layout.contentSize / wideSize が持つ。
+// 独自の .inner のような幅指定クラスは作らないこと（二重管理になる）。
+// =============================================================================
+
+.wp-site-blocks {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// .site-main が伸びることで、コンテンツが短いページでもフッターが下に張り付く。
+.site-main {
+  display: block;
+  flex: 1 0 auto;
+  padding-block: var(--wp--preset--spacing--60);
+}
+
+// ヘッダー / フッターの見た目は site/_header.scss と site/_footer.scss。
+//
+// 以下の 2 クラスは parts/*.html（ブロックテンプレートパーツ）版が出力するもの。
+// ヘッダー / フッターを PHP テンプレートへ移し、parts/*.html と
+// add_theme_support( 'block-template-parts' ) を外した時点で削除してよい。
+.site-header {
+  position: relative;
+}
+
+.site-footer {
+  margin-block-start: auto;
+}

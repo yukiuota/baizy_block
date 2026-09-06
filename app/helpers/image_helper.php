@@ -7,12 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class ImageHelper {
 
-	/**
-	 * テーマの /resources/img/ 以下の画像 URL を返す
-	 *
-	 * @param string $path  /resources/img/ からの相対パス
-	 * @return string       エスケープ済みURL。ファイル不在の場合は空文字
-	 */
+	/** テーマの /resources/img/ 以下の画像 URL を返す（ファイル不在なら空文字） */
 	public static function url( string $path ): string {
 		$img_dir = get_template_directory() . '/resources/img/';
 		if ( ! is_dir( $img_dir ) || ! file_exists( $img_dir . $path ) ) {
@@ -21,12 +16,7 @@ class ImageHelper {
 		return esc_url( BAIZY_BLOCK_THEME_URI . '/resources/img/' . $path );
 	}
 
-	/**
-	 * 画像の width / height / loading 属性文字列を出力する
-	 *
-	 * @param string $path  /resources/img/ からの相対パス
-	 * @param bool   $lazy  loading="lazy" を付与するか（デフォルト: true）
-	 */
+	/** 画像の width / height / loading 属性文字列を出力する */
 	public static function attributes( string $path, bool $lazy = true ): void {
 		$img_dir = get_template_directory() . '/resources/img/';
 		$full    = $img_dir . $path;
@@ -57,12 +47,7 @@ class ImageHelper {
 		echo $attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
-	/**
-	 * SVG ファイルから width / height を取得する
-	 *
-	 * @param string $path  SVG ファイルの絶対パス
-	 * @return array{width: float, height: float}|false
-	 */
+	/** SVG ファイルから width / height を取得する（取得できなければ false） */
 	public static function svg_dimensions( string $path ): array|false {
 		if ( ! file_exists( $path ) ) {
 			return false;

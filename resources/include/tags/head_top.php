@@ -22,8 +22,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 <?php endif; ?>
 
 <?php 
-// head上部に追加するタグ
-// カスタマイザーで設定されたコードを出力
+// head上部にカスタマイザー設定のコードを出力（管理者専用設定のため生出力）
 $head_top_code = get_theme_mod( 'baizy_block_head_top_code', '' );
 if ( !empty( $head_top_code ) ) {
     echo wp_unslash( $head_top_code ) . "\n";

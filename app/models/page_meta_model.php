@@ -5,24 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-/**
- * ACFカスタムフィールド取得用モデル
- *
- * フィールドの取得・整形はすべてこのクラスに集約する。
- * ビュー（resources/）内で get_field() を直接呼ばないこと。
- */
+/** ACFフィールドの取得・整形を集約するモデル（ビュー内で get_field() を直接呼ばない） */
 class PageMetaModel {
 
-	/**
-	 * ACFフィールドを安全に取得する
-	 *
-	 * ACFプラグインが無効でも致命的エラーにならないようガードする。
-	 *
-	 * @param string $name    フィールド名
-	 * @param int    $post_id 投稿ID
-	 * @param mixed  $default フィールドが空・未定義のときに返す値
-	 * @return mixed
-	 */
+	/** ACFフィールドを安全に取得する（ACF無効・値が空なら $default を返す） */
 	public static function field( string $name, int $post_id, $default = null ) {
 		if ( ! function_exists( 'get_field' ) || ! $post_id ) {
 			return $default;
@@ -31,14 +17,7 @@ class PageMetaModel {
 		return ( null === $value || '' === $value || false === $value ) ? $default : $value;
 	}
 
-	/**
-	 * ヒーローセクションのフィールド一式を整形して返す
-	 *
-	 * ビューが使いやすい形（キーが揃った配列）に整えるのがモデルの役割。
-	 *
-	 * @param int $post_id 投稿ID
-	 * @return array{title:string, image:array|null}
-	 */
+	/** ヒーローセクションのフィールド一式をビュー用に整形して返す */
 	public static function get_hero( int $post_id ): array {
 		return array(
 			'title' => (string) self::field( 'hero_title', $post_id, get_the_title( $post_id ) ),

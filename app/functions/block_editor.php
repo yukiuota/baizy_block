@@ -1,9 +1,6 @@
 <?php
 /**
- * ブロックエディター関連のテーマ側設定
- *
- * TypeScript 製のカスタムブロック本体は baizy-custom-blocks プラグインにある。
- * ここではテーマが受け持つ範囲（パターン・ブロックスタイル・利用制限）だけを扱う。
+ * ブロックエディター設定のうちテーマ担当分（パターン・ブロックスタイル・利用制限）。ブロック本体は baizy-custom-blocks プラグイン
  *
  * @package baizy_block
  */
@@ -12,31 +9,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-// =============================================================================
 // ブロックパターン
-// =============================================================================
 
 add_action(
 	'after_setup_theme',
 	function () {
-		/**
-		 * WordPress デフォルトのブロックパターンを無効化する。
-		 *
-		 * baizy_block は patterns/ に置いたテーマ提供パターンだけを
-		 * インサーターに並べる方針のため、コアパターンは出さない。
-		 * コアパターンも使いたい案件ではこの 1 行を削除する。
-		 */
+		// コアパターンを無効化し patterns/ のテーマ提供パターンだけをインサーターに出す（コアも使う案件ではこの 1 行を削除）
 		remove_theme_support( 'core-block-patterns' );
 	}
 );
 
-/**
- * パターンカテゴリーを登録する
- *
- * パターンファイル自体は WordPress 6.0+ の組み込み機能により
- * patterns/ ディレクトリから自動登録されるため、手動登録は不要。
- * ここではカテゴリーのラベルのみ登録する。
- */
+/** パターンカテゴリーのラベルを登録する（パターン本体は patterns/ から WP が自動登録） */
 function baizy_block_register_block_pattern_categories() {
 	$categories = array(
 		'baizy-block-page'    => 'ページ雛形',
@@ -50,17 +33,9 @@ function baizy_block_register_block_pattern_categories() {
 }
 add_action( 'init', 'baizy_block_register_block_pattern_categories' );
 
-// =============================================================================
 // ブロックスタイル（ビルド不要 / PHP のみ）
-// =============================================================================
 
-/**
- * テーマ独自の見た目バリエーションを登録する
- *
- * WordPress 6.6+ の style_data を使うと CSS ファイルを別途用意せずに済む。
- * 値は theme.json のプリセット変数を参照しているため、パレットを差し替えれば
- * ここを触らなくても追従する。
- */
+/** 見た目はページ単位の CSS ではなくブロック単位のバリエーションで出し分ける（色・余白・枠線は style_data、擬似要素等は _styles.scss） */
 function baizy_block_register_block_styles() {
 	register_block_style(
 		'core/button',
@@ -126,23 +101,29 @@ function baizy_block_register_block_styles() {
 			),
 		)
 	);
+
+	// ここから下は style_data で表現できないもの（擬似要素が必要）。CSS は _styles.scss に置く
+	register_block_style(
+		'core/list',
+		array(
+			'name'  => 'check',
+			'label' => 'チェックリスト',
+		)
+	);
+
+	register_block_style(
+		'core/heading',
+		array(
+			'name'  => 'centered-rule',
+			'label' => '中央下線',
+		)
+	);
 }
 add_action( 'init', 'baizy_block_register_block_styles' );
 
-// =============================================================================
 // 投稿タイプごとの利用可能ブロック制限
-// =============================================================================
 
-/**
- * 投稿タイプごとに使えるブロックを絞る
- *
- * クライアントが崩しやすいレイアウト系ブロックを外し、
- * 記事本文に必要なブロックだけを残す用途を想定している。
- *
- * @param bool|string[]           $allowed_blocks      許可するブロック名の配列、または true。
- * @param WP_Block_Editor_Context $block_editor_context エディターのコンテキスト。
- * @return bool|string[]
- */
+/** 投稿タイプごとに使えるブロックを絞る（崩しやすいレイアウト系を外し記事本文用だけ残す） */
 function baizy_block_restrict_blocks_for_post_types( $allowed_blocks, $block_editor_context ) {
 	if ( empty( $block_editor_context->post ) || 'news' !== $block_editor_context->post->post_type ) {
 		// 他の投稿タイプではすべてのブロックを許可
@@ -176,16 +157,9 @@ function baizy_block_restrict_blocks_for_post_types( $allowed_blocks, $block_edi
 }
 add_filter( 'allowed_block_types_all', 'baizy_block_restrict_blocks_for_post_types', 10, 2 );
 
-// =============================================================================
 // エディター専用スクリプト
-// =============================================================================
 
-/**
- * エディター内でのみ動く JS を読み込む
- *
- * ビルド工程を持たないため、resources/common/js/editor.js は
- * 素の JavaScript で書く（wp.domReady / wp.blocks をグローバルから参照）。
- */
+/** エディター内でのみ動く JS を読み込む（ビルド工程が無いため editor.js は素の JavaScript で書く） */
 function baizy_block_enqueue_editor_assets() {
 	$path = BAIZY_BLOCK_THEME_PATH . '/resources/common/js/editor.js';
 

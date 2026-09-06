@@ -1,13 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 
 <?php
-/**
- * 投稿詳細の基本テンプレート
- *
- * 固定ページと違い、投稿は一覧からの流入があるためタイトルを自動出力する。
- * 投稿タイプ別にカスタマイズしたい場合は resources/single/{post_type}.php を作る
- * （resources/layouts/index.php のルーターが優先して読み込む）。
- */
+/** 投稿詳細の基本テンプレート。一覧からの流入があるためタイトルを自動出力する（投稿タイプ別は resources/single/{post_type}.php が優先） */
 ?>
 
 <main class="site-main">

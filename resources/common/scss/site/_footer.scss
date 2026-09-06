@@ -1,0 +1,55 @@
+// =============================================================================
+// フッター（PHP テンプレートが出力 / フロント専用）
+//
+// 想定マークアップ（ナビゲーションは PHP にベタ書き）:
+//   <footer class="footer">
+//     <div class="footer__inner">
+//       <nav class="footer-menu">
+//         <ul><li><a href="...">項目</a></li>...</ul>
+//       </nav>
+//     </div>
+//     <small class="footer__copy">&copy; Your Site Name</small>
+//   </footer>
+//
+// 色・余白・文字サイズは theme.json のプリセット変数を参照している。
+// =============================================================================
+@use "../scss_var" as var;
+
+.footer {
+  background-color: var(--wp--preset--color--base-2);
+}
+
+.footer__inner {
+  // 幅は theme.json の settings.layout.wideSize。独自変数を作らない。
+  max-width: var(--wp--style--global--wide-size);
+  margin-inline: auto;
+  padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--40)
+    var(--wp--preset--spacing--50);
+}
+
+.footer-menu {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--wp--preset--font-size--small);
+
+    @include var.hover {
+      color: var(--wp--preset--color--accent);
+    }
+  }
+}
+
+.footer__copy {
+  display: block;
+  padding-block-end: var(--wp--preset--spacing--40);
+  text-align: center;
+  font-size: var(--wp--preset--font-size--small);
+  color: var(--wp--preset--color--contrast-2);
+}

@@ -1,0 +1,36 @@
+// =============================================================================
+// パターン: セクション よくある質問（patterns/section-faq.php / .bz-faq）
+//
+// core/details のマーカーを ＋ / − に差し替える。擬似要素が必要なため
+// ブロック属性でも style_data でも表現できず、CSS を持つ数少ないケース。
+// 枠線・余白はパターン側の属性なので、ここでは触らない。
+// =============================================================================
+
+.bz-faq {
+  .wp-block-details {
+    summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--wp--preset--spacing--30);
+      list-style: none;
+
+      // Safari 用。標準の list-style: none だけでは三角が消えない。
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::after {
+        content: "+";
+        flex: none;
+        font-size: 1.25em;
+        line-height: 1;
+        color: var(--wp--preset--color--accent);
+      }
+    }
+
+    &[open] > summary::after {
+      content: "−";
+    }
+  }
+}

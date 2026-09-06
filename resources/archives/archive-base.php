@@ -1,15 +1,9 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 
 <?php
-/**
- * アーカイブ / 検索結果の基本テンプレート
- *
- * 投稿タイプ別にカスタマイズしたい場合は resources/archives/{post_type}.php を作る
- * （resources/layouts/index.php のルーターが優先して読み込む）。
- *
- * custom_search_form() は resources/include/search/search.php で定義されるため、
- * 呼び出す前にテンプレートパーツを読み込んでおく必要がある。
- */
+/** アーカイブ / 検索結果の基本テンプレート（投稿タイプ別は resources/archives/{post_type}.php を作れば優先される） */
+
+// custom_search_form() の定義を読み込む
 baizy_block_template_part( 'resources/include/search/search' );
 ?>
 

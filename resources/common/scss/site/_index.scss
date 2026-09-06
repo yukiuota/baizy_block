@@ -1,0 +1,9 @@
+// フロント専用レイヤー。読み込み順に意味があるので並びを変えないこと。
+@use "reset"; // 素の HTML を均す（詳細度 0）
+@use "root"; // theme.json で表現できないサイト変数
+@use "layout"; // サイトシェル（.wp-site-blocks / .site-main）
+@use "header"; // ヘッダー（PHP テンプレートが出力）
+@use "footer"; // フッター（PHP テンプレートが出力）
+@use "utility"; // pc / sp の表示切替
+@use "animation"; // スクロールアニメーション（JS 連動）
+@use "not-found"; // 404

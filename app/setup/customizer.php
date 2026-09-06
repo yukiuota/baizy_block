@@ -69,8 +69,7 @@ class Customizer {
 	}
 
 	public function unslash_code( string $input ): string {
-		// 管理者（edit_theme_options 権限）専用設定のため意図的にサニタイズしない。
-		// GTM 等の script タグをそのまま出力する必要があり、wp_kses はタグ内コンテンツを破壊する。
+		// 管理者専用設定のため意図的にサニタイズしない（wp_kses は GTM 等の script タグを破壊するため）
 		return wp_unslash( $input );
 	}
 }

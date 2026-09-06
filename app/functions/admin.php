@@ -3,21 +3,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-// ----------------------------------------------------- //
 // 管理画面のカスタマイズ
-// ----------------------------------------------------- //
 
-// -----------------------------------------------------
 // 管理画面アイコン読み込み
-// -----------------------------------------------------
 function enqueue_dashicons() {
 	wp_enqueue_style( 'dashicons' );
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_dashicons' );
 
-// -----------------------------------------------------
 // 管理画面の必要ない項目を非表示
-// -----------------------------------------------------
 function remove_menus() {
 	remove_meta_box( 'dashboard_quick_press', 'dashboard', 'side' );
 	remove_meta_box( 'dashboard_primary', 'dashboard', 'side' ); // WordPressニュース
@@ -37,19 +31,9 @@ add_action( 'admin_menu', 'remove_menus', 999 );
 
 
 
-// -----------------------------------------------------
 // 管理画面のカスタム投稿にターム絞り込み機能追加
-// -----------------------------------------------------
 
-/**
- * 投稿一覧で絞り込み対象にするタクソノミーを返す
- *
- * register_taxonomy 済みの情報から導出するため、投稿タイプを追加しても設定不要。
- * 標準の category / post_tag は WP が標準で絞り込み UI を持つため除外する。
- *
- * @param string $post_type 投稿タイプ
- * @return \WP_Taxonomy[]  taxonomy_slug => WP_Taxonomy
- */
+/** 投稿一覧で絞り込み対象にするタクソノミーを返す（register_taxonomy から導出。category / post_tag は WP 標準 UI があるため除外） */
 function baizy_block_get_admin_filter_taxonomies( string $post_type ): array {
 	$taxonomies = get_object_taxonomies( $post_type, 'objects' );
 	unset( $taxonomies['category'], $taxonomies['post_tag'] );
@@ -100,9 +84,7 @@ function add_custom_taxonomies_term_filter() {
 }
 add_action( 'restrict_manage_posts', 'add_custom_taxonomies_term_filter' );
 
-// -----------------------------------------------------
 // カスタムタクソノミーでの絞り込みクエリを処理
-// -----------------------------------------------------
 function filter_posts_by_custom_taxonomy( $query ) {
 	global $pagenow;
 
@@ -142,16 +124,11 @@ add_action( 'pre_get_posts', 'filter_posts_by_custom_taxonomy' );
 
 
 
-// -----------------------------------------------------
-// エディタースタイルの登録は Setup\Scripts::register_editor_styles() に集約
-// （add_editor_style() は after_setup_theme で呼ぶ必要があるため）
-// -----------------------------------------------------
+// エディタースタイルの登録は Setup\Scripts::register_editor_styles() に集約（add_editor_style() は after_setup_theme で呼ぶ必要があるため）
 
 
 
-// -----------------------------------------------------
 // アイキャッチ注意テキスト ※クラシックエディタのみ
-// -----------------------------------------------------
 // function add_featured_image_instruction( $content ) {
 // return $content .= '<p>推奨サイズは幅：300px、高さ：200px</p>';
 // }
@@ -159,8 +136,4 @@ add_action( 'pre_get_posts', 'filter_posts_by_custom_taxonomy' );
 
 
 
-// -----------------------------------------------------
-// カスタムカラーパレットの設定
-// baizy-color-palette プラグインへ移行済み
-// （管理ページ・保存処理・theme.json へのマージはプラグイン側で行う）
-// -----------------------------------------------------
+// カスタムカラーパレットの設定は baizy-color-palette プラグインへ移行済み（管理ページ・保存処理・theme.json へのマージはプラグイン側）

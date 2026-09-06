@@ -7,12 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class PostModel {
 
-	/**
-	 * news カスタム投稿を新着順で取得
-	 *
-	 * @param int $limit 取得件数
-	 * @return \WP_Post[]
-	 */
+	/** news カスタム投稿を新着順で取得 */
 	public static function get_latest_news( int $limit = 5 ): array {
 		return get_posts(
 			array(

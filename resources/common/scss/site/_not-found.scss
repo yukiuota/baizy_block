@@ -1,0 +1,26 @@
+// =============================================================================
+// 404 ページ
+//
+// resources/pages/not-page.php はブロックエディターから編集できない
+// PHP テンプレートのため、例外的にサイズを CSS 側で指定している。
+// 値は theme.json のプリセット変数を参照しているので、
+// パレットやスペーシングを差し替えればここを触らなくても追従する。
+// =============================================================================
+
+.not-page {
+  padding-block: var(--wp--preset--spacing--70);
+  text-align: center;
+}
+
+.not-page__ttl {
+  font-size: var(--wp--preset--font-size--x-large);
+}
+
+.not-page__text {
+  margin-block-start: var(--wp--preset--spacing--40);
+}
+
+.not-page__btn {
+  margin-block-start: var(--wp--preset--spacing--50);
+  justify-content: center;
+}

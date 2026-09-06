@@ -7,13 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class TaxonomyModel {
 
-	/**
-	 * 投稿に紐づくタームデータを配列で返す
-	 *
-	 * @param string $taxonomy タクソノミースラッグ
-	 * @param int    $post_id  投稿ID（0 = 現在の投稿）
-	 * @return array  [ 'name', 'name_escaped', 'slug', 'slug_escaped', 'term_id', 'taxonomy', 'link', 'link_escaped' ][]
-	 */
+	/** 投稿に紐づくタームを name / slug / term_id / link とその escaped 版の配列で返す（$post_id 0 は現在の投稿） */
 	public static function get_terms_of_post( string $taxonomy, int $post_id = 0 ): array {
 		if ( 0 === $post_id ) {
 			$post_id = get_the_ID();

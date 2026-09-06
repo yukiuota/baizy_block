@@ -3,30 +3,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-// ----------------------------------------------------- //
-// グローバル関数ラッパー
-// 実装は app/Helpers/ の各クラスに委譲しています
-// ----------------------------------------------------- //
+// グローバル関数ラッパー（実装は app/helpers/ の各クラスに委譲）
 
 // TemplateHelper
 if ( ! function_exists( 'baizy_block_template_part' ) ) {
-	/**
-	 * @param string $slug テンプレートパス（拡張子なし）
-	 * @param array  $args テンプレートへ渡すデータ（テンプレート側では $args で参照）
-	 */
+	/** テンプレートパーツを読み込む（$slug は拡張子なしのパス、$args はテンプレート側で $args として参照） */
 	function baizy_block_template_part( $slug, $args = array() ) {
 		\BaizyBlock\Helpers\TemplateHelper::part( $slug, (array) $args );
 	}
 }
 
 if ( ! function_exists( 'baizy_block_content_class' ) ) {
-	/**
-	 * 本文ラッパー用のクラス名を出力する
-	 *
-	 * 例: <main class="site-main <?php baizy_block_content_class(); ?>">
-	 *
-	 * @param array $extra 追加クラス名。
-	 */
+	/** 本文ラッパー用のクラス名を出力する（$extra で追加クラスを指定） */
 	function baizy_block_content_class( $extra = array() ) {
 		echo esc_attr( \BaizyBlock\Helpers\TemplateHelper::content_wrapper_class( (array) $extra ) );
 	}

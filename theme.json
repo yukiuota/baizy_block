@@ -214,6 +214,21 @@
         "typography": {
           "fontSize": "var(--wp--preset--font-size--large)"
         }
+      },
+      "h4": {
+        "typography": {
+          "fontSize": "1.25rem"
+        }
+      },
+      "h5": {
+        "typography": {
+          "fontSize": "1.125rem"
+        }
+      },
+      "h6": {
+        "typography": {
+          "fontSize": "1rem"
+        }
       }
     },
     "blocks": {

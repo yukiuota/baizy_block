@@ -47,16 +47,7 @@ class ThemeSetup {
 		add_theme_support( 'editor-styles' );
 		add_theme_support( 'block-patterns' );
 
-		/**
-		 * ブロックテンプレートパーツ（ハイブリッドテーマ化の中核）
-		 *
-		 * parts/*.html がサイトエディター（外観 > エディター > テンプレートパーツ）で
-		 * 編集可能になり、PHP からは block_template_part( 'header' ) で呼び出せる。
-		 * after_setup_theme 上で呼ぶ必要があるため、この位置で登録している。
-		 *
-		 * 注意: align-wide は追加しない。theme.json の settings.layout が上位互換で、
-		 * 両方を宣言すると幅の解決が競合する。
-		 */
+		// parts/*.html をサイトエディターで編集可能にする（align-wide は theme.json の settings.layout と競合するため追加しない）
 		add_theme_support( 'block-template-parts' );
 	}
 
@@ -65,12 +56,7 @@ class ThemeSetup {
 		remove_filter( 'the_excerpt', 'wpautop' );
 	}
 
-	/**
-	 * 投稿スラッグを body class に追加する
-	 *
-	 * Scripts::enqueue_body_class_styles() がこのクラス名と同名の CSS を
-	 * 自動 enqueue するため、ページ別 CSS の紐付けにも使われる。
-	 */
+	/** 投稿スラッグを body class に追加する（PHP / JS からのページ識別用。スタイルの出し分けには使わない） */
 	public function add_slug_to_body_class( array $classes ): array {
 		global $post;
 		if ( isset( $post ) ) {

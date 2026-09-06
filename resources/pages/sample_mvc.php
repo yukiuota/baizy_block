@@ -1,19 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * 【サンプル】ビューの書き方見本
- *
- * ペアになるコントローラー: app/controllers/sample_controller.php
- *
- * ■ ビューのルール
- *   - データはすべて $args で受け取る（get_field() や WP_Query をここに書かない）
- *   - 出力時は必ずエスケープする（esc_html / esc_attr / esc_url / wp_kses_post）
- *   - $args のキーは ?? でフォールバックを用意し、未定義でも警告が出ないようにする
- *
- * ■ ルーター（resources/layouts/index.php）での呼び出し例
- *   baizy_block_template_part( 'resources/pages/sample_mvc', \BaizyBlock\Controllers\SampleController::data() );
- */
+/** 【サンプル】ビューの書き方見本。データは $args で受け取り必ずエスケープして出力する（コントローラー: app/controllers/sample_controller.php） */
 
 $catch_copy = $args['catch_copy'] ?? '';
 $hero       = $args['hero'] ?? array();

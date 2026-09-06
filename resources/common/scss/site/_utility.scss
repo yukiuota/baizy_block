@@ -1,0 +1,40 @@
+// =============================================================================
+// 表示切替ユーティリティ
+//
+// ブロックの「高度な設定 > 追加 CSS クラス」に pc / sp と入力して使う。
+// フロント専用（common.css）なのは意図的で、エディター内では常に
+// 両方が見えていないと編集できなくなるため blocks.css には入れない。
+//
+// 注意: レイアウトの出し分けをこのクラスに頼りすぎると、同じ内容を 2 回
+// 書くことになる。まずは core/columns の折り返しや theme.json の
+// fluid typography で吸収できないかを検討すること。
+// =============================================================================
+@use "../scss_var" as var;
+
+.sp,
+.sp-inline {
+  display: none;
+}
+
+.pc {
+  display: block;
+}
+
+.pc-inline {
+  display: inline;
+}
+
+@include var.sp {
+  .pc,
+  .pc-inline {
+    display: none;
+  }
+
+  .sp {
+    display: block;
+  }
+
+  .sp-inline {
+    display: inline;
+  }
+}

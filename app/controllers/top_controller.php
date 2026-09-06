@@ -8,20 +8,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-/**
- * トップページ用コントローラー
- *
- * Model からデータを集めて、ビュー（resources/pages/top.php）へ渡す配列を組み立てる。
- * 呼び出しは resources/layouts/index.php のルーターから:
- *   baizy_block_template_part( 'resources/pages/top', TopController::data() );
- */
+/** トップページ用コントローラー。Model からデータを集めビュー（resources/pages/top.php）へ渡す */
 class TopController {
 
-	/**
-	 * ビューへ渡すデータを組み立てる
-	 *
-	 * @return array{news:\WP_Post[], hero:array}
-	 */
+	/** ビューへ渡すデータを組み立てる */
 	public static function data(): array {
 		$front_id = (int) get_option( 'page_on_front' );
 

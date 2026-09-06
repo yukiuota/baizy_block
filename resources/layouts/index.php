@@ -1,19 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/**
- * ページ種別ごとに resources/ 以下のテンプレートへ振り分けるルーター
- *
- * 候補テンプレートの解決は TemplateHelper::first_part()
- * （存在する最初の候補を読み込み、なければフォールバック）に統一している。
- *
- * ヘッダー / フッターはブロックテンプレートパーツ（parts/*.html）。
- * 外観 > エディター > テンプレートパーツ から編集できる。
- * PHP 版に戻したい場合は sample/include/ 以下を参照。
- *
- * 最外周の .wp-site-blocks は、ブロックテーマでコアが自動生成しているラッパーを
- * クラシックテーマ側で再現するためのもの。alignfull / alignwide の基準になる。
- */
+/** ページ種別ごとに resources/ 以下へ振り分けるルーター。ヘッダー / フッターは parts/*.html、.wp-site-blocks は alignfull / alignwide の基準 */
 
 use BaizyBlock\Helpers\TemplateHelper;
 
@@ -33,10 +21,7 @@ elseif ( is_single() ) :
         'resources/single/single-base'
     );
 elseif ( is_page() ) :
-    // 固定ページ
-    // 1. 階層付きパス（parent/child → resources/pages/parent-child.php）
-    // 2. スラッグ（resources/pages/{slug}.php）
-    // 3. page-base.php
+    // 固定ページ（階層付きパス → スラッグ → page-base.php の順に解決）
     global $wp;
     $candidates = array();
     if ( ! empty( $wp->request ) ) {

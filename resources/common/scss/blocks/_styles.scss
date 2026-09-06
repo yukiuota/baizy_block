@@ -1,0 +1,52 @@
+// =============================================================================
+// ブロックスタイルバリエーション（.is-style-*）
+//
+// register_block_style() で登録した見た目のうち、CSS が必要なものだけを書く。
+// 登録は app/functions/block_editor.php。
+//
+// 【判断基準】
+//   色 / 余白 / 枠線 / 角丸 だけで済む   → block_editor.php の style_data
+//     （CSS ファイル不要・theme.json のプリセットをそのまま参照できる）
+//   擬似要素・メディアクエリ・複雑なセレクタが要る → このファイル
+//
+// クラス名はコアが .is-style-{name} を出力する。自分で命名しないこと。
+// =============================================================================
+
+// リスト: チェックマーク（core/list / is-style-check）
+// ::marker では色とアイコンを同時に扱えないため CSS 側で持つ。
+.wp-block-list.is-style-check {
+	padding-inline-start: 0;
+	list-style: none;
+
+	li {
+		position: relative;
+		padding-inline-start: 1.75em;
+
+		&::before {
+			content: "";
+			position: absolute;
+			inset-inline-start: 0.25em;
+			inset-block-start: 0.45em;
+			width: 0.5em;
+			height: 0.85em;
+			border: solid var(--wp--preset--color--accent);
+			border-width: 0 2px 2px 0;
+			rotate: 45deg;
+		}
+	}
+}
+
+// 見出し: 中央に短い下線（core/heading / is-style-centered-rule）
+// 擬似要素が必要なので style_data では書けない。
+.wp-block-heading.is-style-centered-rule {
+	text-align: center;
+
+	&::after {
+		content: "";
+		display: block;
+		width: 3rem;
+		height: 2px;
+		margin: var(--wp--preset--spacing--30) auto 0;
+		background-color: var(--wp--preset--color--accent);
+	}
+}

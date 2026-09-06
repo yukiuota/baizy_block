@@ -21,6 +21,8 @@
 |---|---|---|
 | ヘッダー / フッター | `resources/include/` の PHP | `parts/header.html` / `parts/footer.html` |
 | ページのレイアウト | `resources/pages/{slug}.php` に直書き | パターンを起点にブロックで組む |
+| CSS の分け方 | ページ単位（body class と同名の CSS を自動 enqueue） | **ブロック / パターン単位**（`blocks.css` に集約） |
+| デザイントークン | SCSS の `:root` 変数 | **`theme.json` のみ**（SCSS 側に二重定義しない） |
 | `theme.json` | ほぼ空（プリセット未定義） | 色・フォント・余白・レイアウトを定義 |
 | `alignwide` / `alignfull` | 効かない | 効く（`.wp-site-blocks` ラッパーを出力） |
 | ウィジェットエリア / クラシックメニュー | あり | なし（ブロックで代替） |
@@ -85,9 +87,71 @@ pnpm sass:watch
 | `resources/common/scss/common.scss` | `resources/common/css/common.css` | フロントのみ |
 | `resources/common/scss/blocks.scss` | `resources/common/css/blocks.css` | **フロント + エディター** |
 | `resources/common/scss/editor-style.scss` | `resources/common/css/editor-style.css` | エディターのみ |
-| `resources/common/scss/pages/home.scss` | `resources/common/css/home.css` | body class `home` のページ |
 
 > `blocks.scss` とディレクトリ `blocks/` は名前が同じため、`blocks.scss` 内で `@use "blocks"` と書くと Sass が自分自身を読もうとして Module loop になります。パーシャルは `@use "blocks/core"` のように直接指定してください。
+
+## CSS 設計
+
+**スタイルはページ単位ではなくブロック / パターン単位で持ちます。** ブロックとパターンでサイトを組む以上、見た目の単位はページではありません。同じパターンは複数のページを移動しますし、クライアントはページを複製したりスラッグを変えたりします。ページに CSS を紐づけると、パターンを挿し直しただけで見た目が壊れ、しかもエディターには反映されないため気づけません。
+
+### スタイルをどこに書くか（この順で検討する）
+
+| 順 | 置き場所 | 使いどころ |
+|---|---|---|
+| 1 | `theme.json` | 色・余白・フォント・コンテンツ幅。**トークンの唯一の定義元** |
+| 2 | `app/functions/block_editor.php` の `style_data` | 色 / 余白 / 枠線 / 角丸だけで済むバリエーション。CSS ファイル不要 |
+| 3 | `resources/common/scss/blocks/` | コアブロックの調整（`.wp-block-*`）とバリエーションの CSS（`.is-style-*`） |
+| 4 | `resources/common/scss/patterns/` | 特定パターンだけの調整（`.bz-*`） |
+| 5 | `resources/common/scss/site/` | reset・サイトシェル・フロント専用の挙動 **だけ** |
+
+3 と 4 は `blocks.css` に入り、フロントとエディターの両方に読まれます。**コンテンツの見た目は原則ここに置いてください。** 1 か所直せば編集画面と実物が同時に変わります。
+
+5（`common.css`）はフロントにしか読まれません。ここにコンテンツの見た目を書くと編集画面と実物がズレます。入れてよいのは「エディターに出してはいけないもの」だけです。
+
+- reset
+- サイトシェル（`.wp-site-blocks` / `.site-main`）
+- **ヘッダー / フッター**（PHP テンプレートが出力するため、エディターには現れない）
+- JS 連動のスクロールアニメーション（エディター内で `opacity: 0` になると編集できない）
+- `pc` / `sp` の表示切替（エディター内では両方見えている必要がある）
+
+ヘッダー / フッターは PHP に直接書く方針なので、構造の CSS も `site/_header.scss` と `site/_footer.scss` が持ちます。ここはエディターに読み込まれないため、何を書いても編集画面はズレません。本文（`blocks.css`）と役割がはっきり分かれます。
+
+### トークンを二重に持たないこと
+
+コンテンツ幅もフォントも色も、定義元は `theme.json` だけです。SCSS から使うときはエイリアスを挟まず `var(--wp--preset--color--accent)` のように直接書いてください。
+
+`:root { --main-color: ... }` のような独自変数を作ると、エディターの UI から選んだ値（`--wp--preset--*`）と CSS が参照する値の 2 系統ができ、必ず食い違います。`resources/common/scss/site/_root.scss` に置いてよいのは、アニメーション速度のように `theme.json` のスキーマで表現できない値だけです。
+
+同じ理由で、`.inner` のような独自のコンテンツ幅クラスは作りません。`theme.json` の `settings.layout.contentSize` と、コアが出力する `is-layout-constrained` / `has-global-padding` を使ってください（クラシック側では `TemplateHelper::content_wrapper_class()` が付与します）。
+
+### パターン固有の CSS
+
+パターンのルートブロックに `"className":"bz-{名前}"` を付け、`resources/common/scss/patterns/` に同名のパーシャルを置きます。`bz-` 接頭辞はコアの `wp-block-*` / `is-style-*` / `has-*` と衝突させないためのものです。
+
+書く前に、順に確認してください。
+
+1. ブロックの属性（背景色・余白・配置）で足りないか → 足りるならパターンの HTML 側で指定する。クライアントが編集できる
+2. 他のパターンでも使い回すか → 使い回すなら `register_block_style()` のバリエーションにする
+3. それでも要るか（擬似要素・`min-height` など） → `patterns/` に書く
+
+### ヘッダー / フッターを PHP へ移すとき
+
+**CSS は用意済みです。** [site/_header.scss](resources/common/scss/site/_header.scss) と [site/_footer.scss](resources/common/scss/site/_footer.scss) が、ナビゲーションを PHP にベタ書きする前提で書かれています。想定マークアップは各ファイル冒頭のコメントを参照してください。ハンバーガーメニューの `.is-open` / `.active` の付け外しは [resources/common/js/script.js](resources/common/js/script.js) の `headerMenu()` が対応済みです。
+
+残りは PHP 側の作業です。
+
+1. `resources/include/header/` と `resources/include/footer/` に PHP を作る（[sample/include/](sample/include/) が出発点）
+2. [resources/layouts/index.php](resources/layouts/index.php) の `block_template_part( 'header' )` / `( 'footer' )` を `baizy_block_template_part( 'resources/include/header/header_base' )` などへ差し替え
+3. `parts/header.html` / `parts/footer.html` を削除
+4. [app/setup/theme_setup.php](app/setup/theme_setup.php) の `add_theme_support( 'block-template-parts' )` を削除
+5. `theme.json` の `templateParts` 宣言を削除
+6. [site/_layout.scss](resources/common/scss/site/_layout.scss) の `.site-header` / `.site-footer` を削除（ブロックパーツ版が出力していたクラスのため不要になる）
+
+移行後はサイトエディターからヘッダー / フッターを編集できなくなります。ブロックで組む対象は本文だけになり、`blocks.css`（フロント + エディター）と `common.css`（フロントのみ）の境界がそのままヘッダー / フッターと本文の境界になります。
+
+### CSS が増えてきたら
+
+ページ単位で分けるのではなく、`wp_enqueue_block_style( 'core/xxx', ... )` でブロック単位に切り出してください。「そのブロックが出現したページでだけ読む」ので、パターンをどこへ移しても付いて回ります。
 
 ## 主な pnpm スクリプト
 
@@ -125,6 +189,11 @@ baizy_block/
 │   ├── archives/       アーカイブテンプレート
 │   ├── common/
 │   │   ├── scss/       共通スタイルの SCSS ソース
+│   │   │   ├── blocks/     ★ コアブロック調整 + .is-style-*（フロント + エディター）
+│   │   │   ├── patterns/   ★ パターン固有 .bz-*（フロント + エディター）
+│   │   │   ├── site/       reset・サイトシェル・ヘッダー/フッター・pc/sp（フロントのみ）
+│   │   │   ├── editor/     エディターキャンバスの補正（エディターのみ）
+│   │   │   └── scss_var/   ブレイクポイント・mixin・rm()（Sass 変数。デザイントークンではない）
 │   │   ├── css/        コンパイル後の CSS（Sass CLI 出力）
 │   │   └── js/         script.js（フロント）/ editor.js（エディター）
 │   ├── include/        コンポーネント・タグ・検索フォームなどの分割テンプレート
@@ -340,8 +409,9 @@ PHP 版のヘッダー / フッターに戻したい案件では [sample/include
 [app/functions/block_editor.php](app/functions/block_editor.php) がテーマ側のブロックエディター調整をまとめています。
 
 - パターンカテゴリーの登録
-- **ブロックスタイルの登録**（`register_block_style()` の `style_data` を使うので CSS ファイル不要）
-  - ボタン「アウトライン（アクセント）」/ 見出し「下線付き」/ グループ「カード」
+- **ブロックスタイルの登録**（`register_block_style()`）
+  - `style_data` で完結（CSS ファイル不要）: ボタン「アウトライン（アクセント）」/ 見出し「下線付き」/ グループ「カード」
+  - CSS が必要（擬似要素）: リスト「チェックリスト」/ 見出し「中央下線」→ 実体は [resources/common/scss/blocks/_styles.scss](resources/common/scss/blocks/_styles.scss)
 - 投稿タイプごとの使用可能ブロック制限（`allowed_block_types_all`）
 - エディター専用 JS（[resources/common/js/editor.js](resources/common/js/editor.js)）の読み込み
   - ビルド工程を持たないため素の JavaScript で書きます
@@ -357,11 +427,13 @@ TypeScript 製カスタムブロック本体は baizy-custom-blocks プラグイ
 | `resources/common/css/common.css` | フロントのみ | `wp_enqueue_scripts` |
 | `resources/common/css/editor-style.css` | エディターのみ | `add_editor_style`（`after_setup_theme`） |
 
-ブロックの見た目を調整するときは `resources/common/scss/blocks/` に書けば、フロントとエディターの両方に同じ CSS が当たります。
+ブロックの見た目を調整するときは `resources/common/scss/blocks/`、パターン固有なら `resources/common/scss/patterns/` に書けば、フロントとエディターの両方に同じ CSS が当たります。どちらも `blocks.css` にコンパイルされます。
+
+`editor-style.css` はフロントに存在しないため、書くほど「編集画面と実物が違う」に近づきます。足すのは「フロントには別の形で存在するが、エディターには無いもの」に限ってください（例: フロントの `.site-main` が持つ上下余白の補填）。フロント用の `common.scss` はここから読み込んでいません。reset や `pc` / `sp` の表示切替、スクロールアニメーションがエディターに入ると、要素が消えて編集できなくなるためです。
 
 > 色・フォントサイズ・余白は `theme.json` 側で持ってください。`blocks/` に書くとエディターの UI から設定を変えても CSS が勝ってしまい、「変えたのに反映されない」の原因になります。
 
-実装: [app/setup/scripts.php](app/setup/scripts.php)
+詳しくは [CSS 設計](#css-設計) を参照してください。実装: [app/setup/scripts.php](app/setup/scripts.php)
 
 ### カスタムフィールドの JSON 同期
 

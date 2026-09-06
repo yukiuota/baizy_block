@@ -8,9 +8,7 @@
  * Keywords: lp, ランディングページ, 縦積み
  * Description: ヒーロー → サービス → FAQ → CTA の縦積み構成。新規固定ページ作成時の雛形。
  *
- * 各セクションは core/pattern ブロックで section-* パターンを参照している。
- * 挿入時に実体のブロックへ展開されるため、クライアントは通常どおり編集できる。
- * セクションを増やしたいときはこのファイルに wp:pattern を 1 行足すだけでよい。
+ * 各セクションは core/pattern で section-* を参照し挿入時に実体へ展開される。増やすときは wp:pattern を 1 行足す。
  *
  * @package baizy_block
  */

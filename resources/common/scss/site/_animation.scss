@@ -1,0 +1,68 @@
+// =============================================================================
+// スクロールアニメーション
+//
+// ブロックの「追加 CSS クラス」に view01〜view05 と入力して使う。
+// .view-on の付与は js/script.js（IntersectionObserver、一度だけ再生）。
+// 速度は site/_root.scss の --anime-speed / --anime-delay。
+//
+// フロント専用にしているのは、エディター内で opacity: 0 になると
+// 編集できなくなるため。blocks.css には入れないこと。
+// =============================================================================
+@use "../scss_var" as var;
+
+@media (prefers-reduced-motion: no-preference) {
+  .view01,
+  .view02,
+  .view03,
+  .view04,
+  .view05 {
+    opacity: 0;
+    transition: opacity var(--anime-speed) ease, translate var(--anime-speed) ease;
+    transition-delay: var(--anime-delay);
+
+    &.view-on {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  // 下から上
+  .view01 {
+    translate: 0 var.rm(30);
+  }
+
+  // 左から右
+  .view02 {
+    translate: var.rm(-30) 0;
+  }
+
+  // 右から左
+  .view03 {
+    translate: var.rm(30) 0;
+  }
+
+  // 上から下
+  .view04 {
+    translate: 0 var.rm(-30);
+  }
+
+  // その場から
+  .view05 {
+    translate: 0 0;
+  }
+}
+
+// 高さのスライド開閉（.js-active の付与は js/script.js）
+.js-slide-h {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s;
+
+  & > * {
+    overflow: hidden;
+  }
+
+  &.js-active {
+    grid-template-rows: 1fr;
+  }
+}

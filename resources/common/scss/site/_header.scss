@@ -1,0 +1,175 @@
+// =============================================================================
+// ヘッダー（PHP テンプレートが出力 / フロント専用）
+//
+// ヘッダーはブロックではなく PHP に直接書く方針のため、構造の CSS もここが持つ。
+// エディターには一切読み込まれないので、ここに何を書いても編集画面はズレない。
+// 逆に、ここに書いたものはエディターのプレビューには現れない。
+//
+// 想定マークアップ（ナビゲーションは PHP にベタ書き）:
+//   <header class="header">
+//     <div class="header__inner">
+//       <p class="header__logo"><a href="/">サイト名</a></p>
+//       <div class="header-btn">
+//         <button id="js-menu-trigger" class="menu" aria-label="メニュー" aria-expanded="false">
+//           <span></span><span></span><span></span>
+//         </button>
+//       </div>
+//       <nav id="js-menu" class="header-menu">
+//         <ul><li><a href="...">項目</a></li>...</ul>
+//       </nav>
+//     </div>
+//   </header>
+//
+// .is-open / .active の付け外しは js/script.js（headerMenu）。
+// 開閉アニメーションと body のスクロールロックは CSS 側で処理する。
+//
+// 色・余白・文字サイズは theme.json のプリセット変数を参照している。
+// パレットを差し替えればここを触らなくても追従する。
+// =============================================================================
+@use "../scss_var" as var;
+
+.header {
+  position: relative;
+  z-index: 10;
+  background-color: var(--wp--preset--color--base);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wp--preset--spacing--40);
+  // 幅は theme.json の settings.layout.wideSize。独自変数を作らない。
+  max-width: var(--wp--style--global--wide-size);
+  margin-inline: auto;
+  padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+}
+
+.header__logo {
+  font-size: var(--wp--preset--font-size--large);
+  font-weight: 700;
+  line-height: 1;
+
+  a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/*　ナビゲーション
+----------------------------------------------- */
+.header-menu {
+  ul {
+    display: flex;
+    align-items: center;
+    gap: var(--wp--preset--spacing--40);
+  }
+
+  a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+
+    @include var.hover {
+      color: var(--wp--preset--color--accent);
+    }
+  }
+}
+
+/*　ハンバーガーボタン（SP のみ）
+----------------------------------------------- */
+.header-btn {
+  display: none;
+  width: var.rm(35);
+  height: var.rm(25);
+  position: relative;
+  z-index: 13;
+}
+
+.menu {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  span {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: var.rm(3);
+    background-color: var(--wp--preset--color--contrast);
+    transition: top 0.4s, transform 0.4s, opacity 0.4s, background-color 0.4s;
+
+    &:nth-of-type(1) {
+      top: 0;
+    }
+
+    &:nth-of-type(2) {
+      top: var.rm(11);
+    }
+
+    &:nth-of-type(3) {
+      bottom: 0;
+    }
+  }
+
+  // 展開中は × に変形
+  &.active span {
+    &:nth-of-type(1) {
+      top: 50%;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+
+    &:nth-of-type(2) {
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    &:nth-of-type(3) {
+      opacity: 0;
+    }
+  }
+}
+
+/*　SP: メニューを全画面オーバーレイにする
+----------------------------------------------- */
+@include var.sp {
+  .header-btn {
+    display: block;
+  }
+
+  .header-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 12;
+    display: none;
+    opacity: 0;
+    padding: var(--wp--preset--spacing--70) var(--wp--preset--spacing--40);
+    overflow-y: auto;
+    background-color: var(--wp--preset--color--base);
+    // display の切り替えもトランジションさせる（Chrome 117+ / Safari 17.4+）。
+    // 非対応ブラウザでは瞬時に開閉するだけで、動作自体は壊れない。
+    transition: opacity 0.4s, display 0.4s allow-discrete;
+
+    &.is-open {
+      display: block;
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+
+    ul {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--wp--preset--spacing--40);
+    }
+  }
+
+  // メニュー展開中は背面をスクロールさせない
+  body:has(.header-menu.is-open) {
+    overflow: hidden;
+  }
+}

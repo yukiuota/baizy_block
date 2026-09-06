@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dist": "pnpm run sass:build && bash scripts/create_dist.sh",
-    "sass:build": "sass resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css resources/common/scss/pages/home.scss:resources/common/css/home.css --style=compressed --no-source-map",
-    "sass:watch": "sass --watch resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css resources/common/scss/pages/home.scss:resources/common/css/home.css --style=compressed --no-source-map",
+    "sass:build": "sass resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css --style=compressed --no-source-map",
+    "sass:watch": "sass --watch resources/common/scss/common.scss:resources/common/css/common.css resources/common/scss/blocks.scss:resources/common/css/blocks.css resources/common/scss/editor-style.scss:resources/common/css/editor-style.css --style=compressed --no-source-map",
     "test": "echo \"Error: no test specified\" && exit 1",
     "mcp:start": "chrome-devtools-mcp",
     "mcp:headless": "chrome-devtools-mcp --headless=true --isolated=true",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "chrome-devtools-mcp": "~1.6.0",
-    "puppeteer": "^25.4.0",
-    "sass": "^1.102.0"
+    "puppeteer": "^25.9.0",
+    "sass": "^1.103.1"
   }
 }

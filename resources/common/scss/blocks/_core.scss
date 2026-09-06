@@ -14,6 +14,18 @@
 	}
 }
 
+// リスト: site/_reset.scss の :where(ol, ul) で消したマーカーを戻す。
+// reset はフロントにしか読まれないため、ここ（フロント + エディター）で
+// 明示的に指定して両者の見え方を揃えている。
+.wp-block-list {
+	padding-inline-start: 1.5em;
+	list-style: revert;
+
+	li + li {
+		margin-block-start: 0.25em;
+	}
+}
+
 // 画像: キャプションを中央寄せ
 .wp-block-image {
 	figcaption {

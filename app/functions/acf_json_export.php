@@ -1,10 +1,6 @@
 <?php
 /**
- * ACF & SCF JSON Sync
- *
- * ACF: 標準JSON同期機能を使用して自動保存・読み込み
- * SCF: カスタムフィールド設定をJSON形式でエクスポート
- * 保存先: /data/field-groups/
+ * ACF / SCF のフィールド設定を /data/field-groups/ へ JSON 同期する
  *
  * @package baizy_block
  * @since 1.0.0
@@ -14,10 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
-/**
- * ACF JSON保存先を指定
- * ACFの標準JSON同期機能を使用
- */
+/** ACF JSON の保存先を指定（ACF標準の同期機能を使用） */
 function baizy_block_acf_json_save_point( $_path ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	$custom_path = BAIZY_BLOCK_THEME_PATH . '/data/field-groups';
 
@@ -30,10 +23,7 @@ function baizy_block_acf_json_save_point( $_path ) { // phpcs:ignore Generic.Cod
 }
 add_filter( 'acf/settings/save_json', 'baizy_block_acf_json_save_point' );
 
-/**
- * ACF JSON読み込み先を指定
- * ACFの標準JSON同期機能を使用
- */
+/** ACF JSON の読み込み先を指定（デフォルトパスは外す） */
 function baizy_block_acf_json_load_point( $paths ) {
 	// デフォルトパスを削除
 	unset( $paths[0] );
@@ -45,23 +35,14 @@ function baizy_block_acf_json_load_point( $paths ) {
 }
 add_filter( 'acf/settings/load_json', 'baizy_block_acf_json_load_point' );
 
-/**
- * WP_DEBUG 時のみログを出力
- *
- * @param string $message ログメッセージ
- */
+/** WP_DEBUG 時のみログを出力 */
 function baizy_block_scf_log( string $message ): void {
 	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		error_log( 'SCF JSON export: ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 }
 
-/**
- * SCF設定オブジェクトをエクスポート用配列に変換
- *
- * @param \Smart_Custom_Fields_Setting $setting SCF設定
- * @return array
- */
+/** SCF設定オブジェクトをエクスポート用配列に変換 */
 function baizy_block_scf_setting_to_array( $setting ): array {
 	$export_data = array(
 		'id'            => $setting->get_id(),
@@ -98,13 +79,7 @@ function baizy_block_scf_setting_to_array( $setting ): array {
 	return $export_data;
 }
 
-/**
- * ファイルに内容を書き込む（WP_Filesystem 優先、file_put_contents フォールバック）
- *
- * @param string $file_path 書き込み先の絶対パス
- * @param string $contents  書き込む内容
- * @return bool 成功したか
- */
+/** ファイルへ書き込む（WP_Filesystem 優先、使えなければ file_put_contents） */
 function baizy_block_scf_write_file( string $file_path, string $contents ): bool {
 	global $wp_filesystem;
 
@@ -120,14 +95,7 @@ function baizy_block_scf_write_file( string $file_path, string $contents ): bool
 	return false !== file_put_contents( $file_path, $contents );
 }
 
-/**
- * SCFフィールドグループ（カスタムフィールド定義）をJSONにエクスポート
- *
- * ファイル名は「scf-{数値ID}.json」のみ生成する（数値以外のIDはスキップ）ため、
- * パス操作の余地はない。
- *
- * @param int $post_id 投稿ID
- */
+/** SCFフィールドグループを scf-{数値ID}.json へエクスポート（数値以外のIDはスキップするためパス操作の余地はない） */
 function baizy_block_scf_export_field_group( $post_id ) {
 	// SCFが有効化されているか確認
 	if ( ! class_exists( 'SCF' ) ) {

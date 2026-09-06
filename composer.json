@@ -27,6 +27,7 @@
         ],
         "files": [
             "app/functions/settings.php",
+            "app/functions/security.php",
             "app/functions/my_functions.php",
             "app/functions/seo.php",
             "app/functions/admin.php",

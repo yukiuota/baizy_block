@@ -344,6 +344,19 @@ $url = \BaizyBlock\Services\ExternalLinksManager::get_url( 'instagram' );
 - **カスタム投稿メタディスクリプション**: アーカイブページにメタディスクリプションを出力します
 - **HTML ミニファイ**: `start_html_minify()` を `get_header` アクションに追加することで有効化できます（デフォルト無効）
 
+### セキュリティ
+
+実装: [app/functions/security.php](app/functions/security.php)
+
+ユーザー列挙（外部からのユーザー一覧取得）の経路をまとめて塞いでいます。
+
+- **REST API**: `/wp-json/wp/v2/users` と `/wp-json/wp/v2/users/<id>` を `list_users` 権限（管理者・編集者）を持たないアクセスから隠し、404 を返します。ログインユーザー自身を返す `/wp/v2/users/me` はブロックエディターが使うため残しています
+- **コアサイトマップ**: `/wp-sitemap-users-1.xml`（著者一覧）を出力しないようにします。投稿・タクソノミーのサイトマップはそのままです
+- **`/?author=1` のスラッグ露出**: 正規化リダイレクトが `/author/<slug>/` へ飛ばす前に打ち消し、そのまま 404 にします
+- **oEmbed**: `/wp-json/oembed/1.0/embed` のレスポンスから `author_name` / `author_url` を除きます
+
+著者アーカイブ（`/author/<slug>/`）そのものの 404 化は [app/setup/theme_setup.php](app/setup/theme_setup.php) の `disable_author_archive()` で行っています。
+
 ### ブロックテンプレートパーツ（ヘッダー / フッター）
 
 `add_theme_support( 'block-template-parts' )` により、`parts/*.html` が**サイトエディターで編集可能**になります。
